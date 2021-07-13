@@ -3,8 +3,9 @@ import React, {useEffect, useState} from 'react'
 import {contact, contactList, messageList, my} from './fackData'
 import Chat from "@/components/Chat/Chat";
 import ContactList from "@/components/ContactList/ContactList";
-import {Col, message, Row} from "antd";
+import {Col, message, notification, Row} from "antd";
 import {Card} from 'antd';
+import {SmileOutlined} from "@ant-design/icons";
 
 export type userInfo = {
   id: string,
@@ -39,9 +40,6 @@ const Index: React.FC = () => {
   const [msgList, setMsgList] = useState([])//聊天内容
   const [chatList, setChatList] = useState([])//聊天列表
   const [nowChat, setNowChat] = useState<userInfo>();//当前聊天界面
-  const imageHandle = (imps: any) => {
-    console.log(imps)
-  }
 
 
   const myself = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : null;
@@ -67,10 +65,15 @@ const Index: React.FC = () => {
     const getMsg= JSON.parse(e.data);
     const msgId = userId+".msg."+getMsg.formId;
     //如果本地有则不添加
-    console.log(getMsg);
-    console.log(getMsg.formId+"--------------"+nowChat.id)
-    console.log(getMsg.formId==nowChat.id)
-    if (getMsg.formId==nowChat.id){
+    if (getMsg.message.type =='text'){
+      notification.open({
+        key:'message',
+        message: '您收到一条来自 【'+getMsg.user.nickname+"】 的消息：",
+        description: getMsg.message.content,
+        icon: <SmileOutlined style={{ color: '#108ee9' }} />,
+      });
+    }
+    if (nowChat&&getMsg.formId==nowChat.id){
       setMsgList([...msgList,getMsg])
     }
     const userMsg = localStorage.getItem(msgId) ? JSON.parse(localStorage.getItem(msgId) as string) : [];
@@ -83,7 +86,6 @@ const Index: React.FC = () => {
   };
 
   const onSendMsg = (msg) => {
-    console.log("msg"+JSON.stringify(msg))
     const msgId = userId+ ".msg." + nowChat.id;
     msg.toId = nowChat.id;
     msg.user.id=userId;
@@ -126,8 +128,6 @@ const Index: React.FC = () => {
           me={myself}
           chatList={msgList}
           onSend={(msg: msgInfo) => onSendMsg(msg)}
-          onEarlier={() => console.log('EarlierEarlier')}
-          onImage={imageHandle}
           style={{
             width: '100%',
             height: '100%',
