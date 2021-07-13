@@ -8,7 +8,7 @@ const HeaderList = React.forwardRef((props, ref) => {
   const [selectId, setSelectId] = useState()
   const selectContactHandle = (con) => {
     setSelectId(con.id)
-    props.onSelect && props.onSelect(contact)
+    props.onSelect && props.onSelect(con)
   }
 
   return (

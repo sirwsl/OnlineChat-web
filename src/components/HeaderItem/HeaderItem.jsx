@@ -29,8 +29,9 @@ export default function HeaderItem({
         {
           // eslint-disable-next-line no-nested-ternary
           type==='0'?(<span className={style.date_area}><Button  className={style.btn} type="primary">私聊</Button></span>):
-          type==='1'?(<span className={style.date_area}><Button className={style.btn}>取关</Button></span>):
-          type==='2'?(<span className={style.date_area}><Button className={style.btn}>关注</Button></span>):null
+          type==='1'?(<span className={style.date_area}><Button  className={style.btn} type="primary">群聊</Button></span>):
+          type==='10'?(<span className={style.date_area}><Button className={style.btn}>取关</Button></span>):
+          type==='11'?(<span className={style.date_area}><Button className={style.btn}>关注</Button></span>):null
         }
       </div>
     </div>
