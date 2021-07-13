@@ -5,13 +5,19 @@ import './index.less'
 import { Row } from 'antd';
 import { contactList} from "@/pages/Chat/fackData";
 import HeaderList from "@/components/HeaderList/HeaderList";
-import {userInfo} from "@/pages/Chat";
 
 const Index: React.FC = ()=>{
 
   const onSelectChat = (temp)=>{
     console.log(temp)
   }
+  const addChatPage = (temp) =>{
+    const myself = localStorage.getItem('user') ?  "user."+JSON.parse(localStorage.getItem('user') as string).id : "";
+    let chatList = localStorage.getItem(myself) ? JSON.parse(localStorage.getItem(myself) as string):[];
+    chatList.push(temp);
+    localStorage.setItem(myself,JSON.stringify(chatList));
+  }
+
   // @ts-ignore
   return <>
     <PageContainer>
@@ -22,7 +28,7 @@ const Index: React.FC = ()=>{
             <HeaderList
               type='1'
               data={contactList}
-              onSelect={(temp) => onSelectChat(temp)}
+              onSelect={(temp) => addChatPage(temp)}
               style={{
                 marginRight: 10,
                 height: 400,

@@ -3,11 +3,12 @@ import React, {useEffect, useState} from 'react'
 import {contact, contactList, messageList, my} from './fackData'
 import Chat from "@/components/Chat/Chat";
 import ContactList from "@/components/ContactList/ContactList";
-import {Col, message, notification, Row} from "antd";
+import {Button, Col, message, notification, Result, Row} from "antd";
 import {Card} from 'antd';
 import {SmileOutlined} from "@ant-design/icons";
 
 export type userInfo = {
+  type:string;
   id: string,
   avatar: string,
   nickname: string,
@@ -15,12 +16,8 @@ export type userInfo = {
   date: string
 }
 
-export type finalInfo = {
-  type: string,
-  data: msgInfo|userInfo,
-  id:string
-}
 export type msgInfo = {
+  type:string;
   formId: string,
   toId: string,
   _id: string,
@@ -38,20 +35,21 @@ export type msgInfo = {
 const Index: React.FC = () => {
 
   const [msgList, setMsgList] = useState([])//聊天内容
-  const [chatList, setChatList] = useState([])//聊天列表
+  const [chatList, setChatList] = useState<userInfo[]>([]
+  )//聊天列表
   const [nowChat, setNowChat] = useState<userInfo>();//当前聊天界面
 
 
   const myself = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : null;
   const userId = myself ? myself.id : "0";
-  var chatId = "user." + userId;
+  const chatId = "user." + userId;
   //初始化好友列表
-  var chatTemp: userInfo[] = localStorage.getItem(chatId) ? JSON.parse(localStorage.getItem(chatId) as string) : null;
-  // @ts-ignore
-  if (chatTemp && chatTemp.length > 0) {
-    setChatList([...chatList, chatTemp]);
-    setNowChat(chatTemp[0]);
-  }
+  useEffect(()=>{
+    let chatTemp: userInfo[] = localStorage.getItem(chatId) ? JSON.parse(localStorage.getItem(chatId) as string) : [];
+    setChatList(chatTemp);
+    if (chatTemp.length > 0)setNowChat(chatTemp[0]);
+  },[])
+
 
   /**
    * 聊天
@@ -63,29 +61,48 @@ const Index: React.FC = () => {
 
   listClient.onmessage = (e: { data:string}) => {
     const getMsg= JSON.parse(e.data);
-    const msgId = userId+".msg."+getMsg.formId;
-    //如果本地有则不添加
-    if (getMsg.message.type =='text'){
-      notification.open({
-        key:'message',
-        message: '您收到一条来自 【'+getMsg.user.nickname+"】 的消息：",
-        description: getMsg.message.content,
-        icon: <SmileOutlined style={{ color: '#108ee9' }} />,
-      });
+    if (getMsg.type =='msg'){
+      //如果本地没有，请求返回当前人
+      let flag = true;
+      chatList.forEach(li =>{
+        if (li.id==getMsg.formId){
+          flag = false;
+          return;
+        }
+      })
+      if (flag) listClient.send(JSON.stringify({type:'user',id:getMsg.formId,data:null}))
+      //请求结束继续执行
+      if (getMsg.message.type =='text'){
+        notification.open({
+          key:'message',
+          message: '您收到一条来自 【'+getMsg.user.nickname+"】 的消息：",
+          description: getMsg.message.content,
+          icon: <SmileOutlined style={{ color: '#108ee9' }} />,
+        });
+      }
+      const msgId = userId+".msg."+getMsg.formId;
+      if (nowChat&&getMsg.formId==nowChat.id){
+        setMsgList([...msgList,getMsg])
+      }
+      const userMsg = localStorage.getItem(msgId) ? JSON.parse(localStorage.getItem(msgId) as string) : [];
+      localStorage.setItem(msgId, JSON.stringify([...userMsg, JSON.parse(e.data)]));
+
+    }else if (getMsg.type == 'user'){
+      let chatTemp: userInfo[] = localStorage.getItem(chatId) ? JSON.parse(localStorage.getItem(chatId) as string) : [];
+      chatTemp.push(getMsg);
+      setChatList(chatTemp);
+    }else if(getMsg.type =='error'){
+      message.warning({
+        content: getMsg.msg,
+        className: 'custom-class',
+        style: {
+          marginTop: '20vh',
+        },
+      }).then(r => null);
     }
-    if (nowChat&&getMsg.formId==nowChat.id){
-      setMsgList([...msgList,getMsg])
-    }
-    const userMsg = localStorage.getItem(msgId) ? JSON.parse(localStorage.getItem(msgId) as string) : [];
-    localStorage.setItem(msgId, JSON.stringify([...userMsg, JSON.parse(e.data)]));
-    //
-    // //如果本地没有就添加
-    // localStorage.setItem(chatId, JSON.stringify([...chatList, e.data]));
-    // setMsgList([...msgList, e.data])
-    // localStorage.setItem(msgId, JSON.stringify(msgList));
   };
 
-  const onSendMsg = (msg) => {
+  const onSendMsg = (msg: { type?: string; formId?: string; toId: any; _id?: string; date?: number; user: any; message?: { type: string; content: string; }; }) => {
     const msgId = userId+ ".msg." + nowChat.id;
     msg.toId = nowChat.id;
     msg.user.id=userId;
@@ -107,11 +124,24 @@ const Index: React.FC = () => {
       setNowChat(user);
   }
 
+  const omRm =(id:string)=>{
+    let chatTemp = [];
+    chatTemp.push(chatList)
+    chatList.forEach(li =>{
+      if (li.id == id){
+        chatTemp.pop();
+      }
+    })
+    setChatList(chatTemp);
+    setNowChat(null);
+    localStorage.setItem(chatId,JSON.stringify(chatTemp));
+  }
+
   return <>
     <Row>
       <Col span={6}>
         <ContactList
-          data={contactList}
+          data={chatList}
           onSelect={(temp: userInfo) => onSelectChat(temp)}
           style={{
             marginRight: 10,
@@ -127,13 +157,18 @@ const Index: React.FC = () => {
           contact={nowChat}
           me={myself}
           chatList={msgList}
+          onRm={(id:string)=>omRm(id)}
           onSend={(msg: msgInfo) => onSendMsg(msg)}
           style={{
             width: '100%',
             height: '100%',
             borderRadius: 5,
           }}
-        /> : <Card style={{height: '100%'}}><p style={{textAlign: 'center', margin: 'auto 0'}}>点击好友列表开始聊天吧</p></Card>}
+        /> : <Card style={{height: '100%'}}>
+          <Result style={{marginTop:100}}
+            title="快开始你的聊天之旅吧"
+          />
+        </Card>}
 
       </Col>
     </Row>

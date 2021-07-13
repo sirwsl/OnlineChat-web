@@ -13,6 +13,7 @@ const WrappedChatRecordList = ScrollBarWrapper(ChatRecordList)
 export default class Chat extends Component {
   static propTypes = {
     onSend: PropTypes.func.isRequired,
+    onRm: PropTypes.func.isRequired,
     me: PropTypes.object.isRequired,
     contact: PropTypes.object.isRequired,
     style: PropTypes.object.isRequired,
@@ -36,12 +37,16 @@ export default class Chat extends Component {
     this.chatRecordList.current.computeHeight()
   }
 
+  rmi = (msgData)=>{
+    this.props.onRm(msgData);
+  };
+
   render() {
     const listHeight =380;
 
     return (
       <div className={style.content} style={this.props.style}>
-        <ChatHeader data={this.props.contact} />
+        <ChatHeader onRm = {this.rmi} data={this.props.contact} />
 
         <WrappedChatRecordList
           {...this.props}

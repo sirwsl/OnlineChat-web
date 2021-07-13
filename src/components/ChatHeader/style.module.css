@@ -15,6 +15,15 @@
   flex-direction: column;
   padding-left: 10px;
 }
+.desc_button {
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+  color: #1aad19;
+}
+.desc_button:hover{
+  color: red;
+}
 .nickname {
   font-size: 14px;
   color: #333;
