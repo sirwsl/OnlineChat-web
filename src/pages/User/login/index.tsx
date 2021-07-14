@@ -43,6 +43,7 @@ const Login: React.FC<LoginProps> = (props) => {
   const {status, type: loginType} = userLogin;
   const [type, setType] = useState<string>('account');
   const [typeMsg, setTypeMsg] = useState<string>('手机快捷登录');
+  const [imgCode,setImgCode] = useState('/api/open/getImg/v1?id=');
 
   const handleSubmit = (values: LoginParamsType) => {
     const {dispatch} = props;
@@ -111,7 +112,7 @@ const Login: React.FC<LoginProps> = (props) => {
         {type === 'account' && (
           <>
             <ProFormText
-              name="userName"
+              name="name"
               fieldProps={{
                 size: 'large',
                 prefix: <UserOutlined className={styles.prefixIcon}/>,
@@ -172,7 +173,7 @@ const Login: React.FC<LoginProps> = (props) => {
               </Col>
               <Col span={6} style={{marginLeft: '10px'}}>
                 <Image width={100} preview={false}
-                       height={38} src='https://test.wslhome.top/verify/getJpg/v1'/>
+                       height={38} src={imgCode} onClick={()=>{setImgCode(imgCode+Math.random())}}/>
               </Col>
             </Row>
           </>
@@ -364,7 +365,7 @@ const Login: React.FC<LoginProps> = (props) => {
               </Col>
               <Col span={6} style={{marginLeft: '10px'}}>
                 <Image width={100} preview={false}
-                       height={38} src='https://test.wslhome.top/verify/getJpg/v1'/>
+                       src={imgCode} onClick={()=>{setImgCode(imgCode+Math.random())}}/>
               </Col>
             </Row>
           </>
@@ -381,7 +382,6 @@ const Login: React.FC<LoginProps> = (props) => {
               float: 'right',
             }}
           >
-
           </a>
         </div>
       </ProForm>

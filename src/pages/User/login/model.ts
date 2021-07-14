@@ -44,18 +44,19 @@ const Model: LoginModelType = {
        */
       if (payload.type === "register") {//注册
         const response = yield call(fakeAccountLogin, payload);
-        if(response.status === 'SUCCESS' && response.code===0){
+        if(response.msg === 'SUCCESS' && response.code===0){
           message.success('🎉 🎉 🎉  注册成功请重新登录！');
           window.location.href = '/';
         }
       } else {//登录
         const response = yield call(fakeAccountLogin, payload);
+
         yield put({
           type: 'changeLoginStatus',
           payload: response,
         });
         // Login successfully
-        if (response.status === 'SUCCESS' && response.code===0) {
+        if (response.msg === 'SUCCESS' && response.code===0) {
           message.success('🎉 🎉 🎉  登录成功！');
           history.push({pathname:'/index'});
         }
@@ -78,7 +79,7 @@ const Model: LoginModelType = {
       setUser(payload.data);
       return {
         ...state,
-        status: payload.status,
+        status: payload.msg,
         data:payload.data,
         userMsg:payload.userMsg
       };

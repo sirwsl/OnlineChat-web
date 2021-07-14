@@ -1,6 +1,6 @@
 /** Request 网络请求工具 更详细的 api 文档: https://github.com/umijs/umi-request */
 import { extend } from 'umi-request';
-import { notification } from 'antd';
+import {message, notification} from 'antd';
 
 import {getDvaApp} from 'umi';
 
@@ -42,7 +42,6 @@ const errorHandler = (error: { response: Response }): Response => {
     getDvaApp()._store.dispatch({
       type: 'login/logout',
     });
-
   }
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
@@ -69,6 +68,18 @@ const request = extend({
   errorHandler, // default error handling
   credentials: 'include', // Does the default request bring cookies
 });
+
+// @ts-ignore
+request.interceptors.response.use(async (response, options) => {
+  let result;
+  const data = await response.clone().json();
+  if (data.code !== 0) {
+    message.error(data.userMsg);
+  } else {
+    result = response;
+  }
+  return result;
+})
 
 request.interceptors.request.use((url, options) => {
   options.headers = {

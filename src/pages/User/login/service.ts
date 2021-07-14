@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 export type LoginParamsType = {
-  userName: string;
+  name: string;
   password: string;
   code: string;
   phone: string;
@@ -12,7 +12,8 @@ export type LoginParamsType = {
 };
 
 export async function fakeAccountLogin(params: LoginParamsType) {
-  return request('/api/login/account', {
+  params.type = 'account';
+  return request('/api/open/login/v1', {
     method: 'POST',
     data: params,
   });

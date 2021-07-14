@@ -9,7 +9,7 @@ export function getAuthority(str?: string): string | string[] {
   let authority;
   try {
     if (user) {
-      authority = JSON.parse(user).authority;
+      authority = JSON.parse(user).authorization;
     }else{
       history.push({pathname:'/user/login'})
     }

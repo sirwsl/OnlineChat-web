@@ -54,7 +54,7 @@ const Index: React.FC = () => {
   /**
    * 聊天
    */
-  let listClient = new WebSocket('ws://localhost:8080/chatMsg/'+userId)
+  let listClient = new WebSocket('/websocket/chatMsg/'+userId)
   listClient.onerror = (e: any) => {
     message.warn('网络欠佳，请刷新重试');
   };

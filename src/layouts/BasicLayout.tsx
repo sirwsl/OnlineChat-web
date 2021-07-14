@@ -102,7 +102,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   useEffect(()=>{
     const myself = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : null;
     const userId = myself ? myself.id : "0";
-    let client = new WebSocket('ws://localhost:8080/socket/'+userId);
+    let client = new WebSocket('/websocket/socket/'+userId);
 // 报错的回调函数
     client.onerror = (e: any) =>{
       message.warning('网络连接失败，请稍后再试');
