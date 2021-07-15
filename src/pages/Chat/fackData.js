@@ -10,6 +10,7 @@ if (JSON.stringify(userId)==JSON.stringify("456788765678765")){
     nickname: '66',
     message: '你抓不到我！',
     date: '02-07',
+    flag: true
   }]
 }else{
   temp = [{

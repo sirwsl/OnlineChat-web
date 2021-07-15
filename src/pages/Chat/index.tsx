@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react'
 
-import {contact, contactList, messageList, my} from './fackData'
 import Chat from "@/components/Chat/Chat";
 import ContactList from "@/components/ContactList/ContactList";
-import {Button, Col, message, notification, Result, Row} from "antd";
+import { Col, message, notification, Result, Row} from "antd";
 import {Card} from 'antd';
 import {SmileOutlined} from "@ant-design/icons";
 
@@ -54,7 +53,7 @@ const Index: React.FC = () => {
   /**
    * 聊天
    */
-  let listClient = new WebSocket('/websocket/chatMsg/'+userId)
+  let listClient = new WebSocket('ws://localhost:8080/chatMsg/'+userId)
   listClient.onerror = (e: any) => {
     message.warn('网络欠佳，请刷新重试');
   };
@@ -82,6 +81,8 @@ const Index: React.FC = () => {
       }
       const msgId = userId+".msg."+getMsg.formId;
       if (nowChat&&getMsg.formId==nowChat.id){
+
+        // @ts-ignore
         setMsgList([...msgList,getMsg])
       }
       const userMsg = localStorage.getItem(msgId) ? JSON.parse(localStorage.getItem(msgId) as string) : [];
@@ -103,12 +104,15 @@ const Index: React.FC = () => {
   };
 
   const onSendMsg = (msg: { type?: string; formId?: string; toId: any; _id?: string; date?: number; user: any; message?: { type: string; content: string; }; }) => {
+    // @ts-ignore
     const msgId = userId+ ".msg." + nowChat.id;
+    // @ts-ignore
     msg.toId = nowChat.id;
     msg.user.id=userId;
     // @ts-ignore
     if (msgId) {
       let list = msgList||[];
+      // @ts-ignore
       list.push(msg);
       setMsgList(list)
       localStorage.setItem(msgId, JSON.stringify(list));
@@ -125,14 +129,17 @@ const Index: React.FC = () => {
   }
 
   const omRm =(id:string)=>{
+    // @ts-ignore
     let chatTemp = [];
     chatTemp.push(chatList)
     chatList.forEach(li =>{
       if (li.id == id){
+        // @ts-ignore
         chatTemp.pop();
       }
-    })
+    }) // @ts-ignore
     setChatList(chatTemp);
+    // @ts-ignore
     setNowChat(null);
     localStorage.setItem(chatId,JSON.stringify(chatTemp));
   }

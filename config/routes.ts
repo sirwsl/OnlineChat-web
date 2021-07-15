@@ -55,9 +55,8 @@
               },
               {
                 path: '/admin',
-                name: '管理',
+                name: '使用说明',
                 icon: 'tool',
-                authority: ['admin'],
                 component: './Admin/index',
               },
               {

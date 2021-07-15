@@ -13,12 +13,6 @@ export default {
         changeOrigin: true,
         pathRewrite: {'^/api': ''},
       },
-      '/websocket/': {
-        target: 'ws://localhost:8080/', // 后台服务地址以及端口号
-        ws: true, // websoket 服务
-        changeOrigin: true, //是否跨域
-        pathRewrite: {'^/websocket': ''},
-      }
     }
 
 };
