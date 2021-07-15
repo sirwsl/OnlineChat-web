@@ -29,3 +29,14 @@ export async function fakeAccountLogin(params: LoginParamsType) {
 export async function getFakeCaptcha(mobile: string) {
   return request(`/api/open/getCode/v1?phone=${mobile}`);
 }
+
+/***
+ * 注册
+ * @param params
+ */
+export async function registered(params: LoginParamsType) {
+  return request('/api/open/register/v1', {
+    method: 'POST',
+    data: params,
+  });
+}

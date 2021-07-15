@@ -29,37 +29,39 @@ const codeMessage: Record<number, string> = {
  * @en-US Exception handler
  */
 const errorHandler = (error: { response: Response }): Response => {
-  const { response } = error;
-  const { status } = response;
-  const {statusText} =response;
-  if (status === 401) {
-    notification.error({
-      message: statusText,
-    });
-    // @HACK
-    /*  */
-    getDvaApp()._store.dispatch({
-      type: 'login/logout',
-    });
-  }
-  if (status === 400||406||404||410||422||500||502||503||504) {
-    notification.error({
-      message: statusText,
-    });
-  }
-  if (response && response.status) {
-    const errorText = codeMessage[response.status] || response.statusText;
-    const { status, url } = response;
+  if (error){
+    const { response } = error;
+    const { status } = response||null;
+    const {statusText} =response;
+    if (status === 401) {
+      notification.error({
+        message: statusText,
+      });
+      // @HACK
+      /*  */
+      getDvaApp()._store.dispatch({
+        type: 'login/logout',
+      });
+    }
+    if (status&&status === 400||406||404||410||422||500||502||503||504) {
+      notification.error({
+        message: statusText,
+      });
+    }
+    if (response && response.status) {
+      const errorText = codeMessage[response.status] || response.statusText;
+      const { status, url } = response;
 
-    notification.error({
-      message: `Request error ${status}: ${url}`,
-      description: errorText,
-    });
-  } else if (!response) {
-    notification.error({
-      description: '您的网络异常，无法连接到服务器',
-      message: 'Network anomaly',
-    });
+      notification.error({
+        message: `Request error ${status}: ${url}`,
+        description: errorText,
+      });
+    } else if (!response) {
+      notification.error({
+        description: '您的网络异常，无法连接到服务器',
+        message: 'Network anomaly',
+      });
+    }
   }
 };
 

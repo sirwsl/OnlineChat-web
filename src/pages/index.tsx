@@ -3,15 +3,19 @@ import { PageContainer } from '@ant-design/pro-layout';
 import {Card, Col, Divider, Row, Statistic} from 'antd';
 import styles from './index.less'
 import {ArrowUpOutlined} from "@ant-design/icons";
-import { history } from 'umi';
-
+import './service'
+import {getAll} from "@/pages/service";
 export default (): React.ReactNode => {
 
-  const [messageData,setMessageData] = useState();
+  const [messageData,setMessageData] = useState({now:0,day:0,week:0,month:0});
 
-  useEffect(()=>{
-    const data = history.location.state?history.location.state:0;
-    setMessageData(data)
+  // @ts-ignore
+  useEffect(async () => {
+
+    const data = await getAll();
+    console.log(data)
+    setMessageData(data.data);
+
   },[])
 
   return (
@@ -38,7 +42,7 @@ export default (): React.ReactNode => {
             <Card>
               <Statistic
                 title="在线人数"
-                value={messageData}
+                value={messageData.now}
                 valueStyle={{ color: '#3f8600' }}
                 prefix={<ArrowUpOutlined />}
                 suffix="人"
@@ -49,7 +53,7 @@ export default (): React.ReactNode => {
           <Card>
             <Statistic
               title="今日活跃"
-              value={11}
+              value={messageData.day}
               valueStyle={{ color: '#3f8600' }}
               prefix={<ArrowUpOutlined />}
               suffix="人"
@@ -60,7 +64,7 @@ export default (): React.ReactNode => {
           <Card>
             <Statistic
               title="本周活跃"
-              value={11}
+              value={messageData.week}
               valueStyle={{ color: '#3f8600' }}
               prefix={<ArrowUpOutlined />}
               suffix="人"
@@ -71,7 +75,7 @@ export default (): React.ReactNode => {
           <Card>
             <Statistic
               title="本月活跃"
-              value={11}
+              value={messageData.month}
               valueStyle={{ color: '#3f8600' }}
               prefix={<ArrowUpOutlined />}
               suffix="人"

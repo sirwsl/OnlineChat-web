@@ -1,7 +1,7 @@
 import type {Reducer, Effect} from 'umi';
 import {history} from 'umi';
 
-import {fakeAccountLogin, registered} from '@/pages/User/login/service';
+import {fakeAccountLogin, registered} from './service';
 import {setUser} from '@/utils/authority';
 import {message} from 'antd';
 import {CurrentUser} from "@/models/user";
