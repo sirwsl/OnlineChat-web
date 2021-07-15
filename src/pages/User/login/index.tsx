@@ -67,7 +67,6 @@ const Login: React.FC<LoginProps> = (props) => {
   const checkPsd = (rule, value, callback) => {
     // @ts-ignore
     const password = document.getElementById('password').value;
-    console.log(password);
     if (password && password !== value) {
       callback(new Error('两次密码输入不一致'));
     } else {
@@ -189,7 +188,8 @@ const Login: React.FC<LoginProps> = (props) => {
                 size: 'large',
                 prefix: <MobileOutlined className={styles.prefixIcon}/>,
               }}
-              name="mobile"
+              name="phone"
+              id = "phone"
               placeholder= '请输入手机号'
               rules={[
                 {
@@ -227,7 +227,7 @@ const Login: React.FC<LoginProps> = (props) => {
                 }
                 return  '获取验证码';
               }}
-              name="captcha"
+              name="phoneCode"
               rules={[
                 {
                   required: true,
@@ -239,14 +239,16 @@ const Login: React.FC<LoginProps> = (props) => {
                   ),
                 },
               ]}
-              onGetCaptcha={async (mobile) => {
+              onGetCaptcha={async () => {
                 //获取验证码
-                const result = await getFakeCaptcha(mobile);
+                // @ts-ignore
+                var phone = document.getElementById('phone').value;
+                const result = await getFakeCaptcha(phone);
                 if (result === false) {
                   return;
                 }
                 message.success(
-                  '获取验证码下发成功，请登录手机号查看: 1234',
+                  '获取验证码下发成功，请登录手机号查看',
                 );
               }}
             />
@@ -279,7 +281,7 @@ const Login: React.FC<LoginProps> = (props) => {
               ]}
             />
             <ProFormText
-              name="userName"
+              name="name"
               fieldProps={{
                 size: 'large',
                 prefix: <UserOutlined className={styles.prefixIcon}/>,

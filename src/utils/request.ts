@@ -22,17 +22,16 @@ const codeMessage: Record<number, string> = {
   504: '网关超时。',
 };
 
+// @ts-ignore
+// @ts-ignore
 /**
  * @zh-CN 异常处理程序
  * @en-US Exception handler
  */
 const errorHandler = (error: { response: Response }): Response => {
-  console.log(error);
-
   const { response } = error;
   const { status } = response;
   const {statusText} =response;
-  console.log("state"+status);
   if (status === 401) {
     notification.error({
       message: statusText,
@@ -41,6 +40,11 @@ const errorHandler = (error: { response: Response }): Response => {
     /*  */
     getDvaApp()._store.dispatch({
       type: 'login/logout',
+    });
+  }
+  if (status === 400||406||404||410||422||500||502||503||504) {
+    notification.error({
+      message: statusText,
     });
   }
   if (response && response.status) {
@@ -57,7 +61,6 @@ const errorHandler = (error: { response: Response }): Response => {
       message: 'Network anomaly',
     });
   }
-  return response;
 };
 
 /**
@@ -74,7 +77,11 @@ request.interceptors.response.use(async (response, options) => {
   let result;
   const data = await response.clone().json();
   if (data.code !== 0) {
-    message.error(data.userMsg);
+    if (data.userMsg){
+      message.error(data.userMsg);
+    }else if (data.data){
+      message.error(data.data);
+    }
   } else {
     result = response;
   }

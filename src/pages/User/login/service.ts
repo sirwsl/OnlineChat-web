@@ -11,14 +11,21 @@ export type LoginParamsType = {
 
 };
 
+/**
+ * 登录
+ * @param params
+ */
 export async function fakeAccountLogin(params: LoginParamsType) {
-  params.type = 'account';
   return request('/api/open/login/v1', {
     method: 'POST',
     data: params,
   });
 }
 
+/**
+ * 获取验证码
+ * @param mobile
+ */
 export async function getFakeCaptcha(mobile: string) {
-  return request(`/api/login/captcha?mobile=${mobile}`);
+  return request(`/api/open/getCode/v1?phone=${mobile}`);
 }
