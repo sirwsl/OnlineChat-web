@@ -11,10 +11,11 @@ export default (): React.ReactNode => {
 
   // @ts-ignore
   useEffect(async () => {
-
     const data = await getAll();
     console.log(data)
-    setMessageData(data.data);
+    if (data&&data.data){
+      setMessageData(data.data);
+    }
 
   },[])
 

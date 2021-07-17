@@ -31,7 +31,7 @@ const codeMessage: Record<number, string> = {
 const errorHandler = (error: { response: Response }): Response => {
   if (error){
     const { response } = error;
-    const { status } = response||null;
+    const { status } = response
     const {statusText} =response;
     if (status === 401) {
       notification.error({
@@ -43,11 +43,15 @@ const errorHandler = (error: { response: Response }): Response => {
         type: 'login/logout',
       });
     }
-    if (status&&status === 400||406||404||410||422||500||502||503||504) {
+    if (status&&status === 400) {
       notification.error({
         message: statusText,
       });
     }
+    if (status===500){
+      message.error("服务器内部错误，请联系wx:sirwsl")
+    }
+
     if (response && response.status) {
       const errorText = codeMessage[response.status] || response.statusText;
       const { status, url } = response;
@@ -91,17 +95,16 @@ request.interceptors.response.use(async (response, options) => {
 })
 
 request.interceptors.request.use((url, options) => {
+  console.log('进入请求头设置')
   options.headers = {
     ...options.headers,
     'Access-Control-Allow-Origin': '*',
     'Authorization': `${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json',
     'Accept': 'application/json',
     'x-auth-token': `${localStorage.getItem('token')}`
   }
   return (
     {
-
       options: {
         ...options,
         interceptors: true,
@@ -113,7 +116,7 @@ request.interceptors.request.use((url, options) => {
 
 // response拦截器, 处理response
 request.interceptors.response.use((response, options) => {
-  let token = response.headers.get("x-auth-token");
+  let token = response.headers.get("Authorization");
   if (token) {
     localStorage.setItem("token", token);
   }
