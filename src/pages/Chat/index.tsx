@@ -34,8 +34,7 @@ export type msgInfo = {
 const Index: React.FC = () => {
 
   const [msgList, setMsgList] = useState([])//聊天内容
-  const [chatList, setChatList] = useState<userInfo[]>([]
-  )//聊天列表
+  const [chatList, setChatList] = useState<userInfo[]>([])//聊天列表
   const [nowChat, setNowChat] = useState<userInfo>();//当前聊天界面
 
 
@@ -129,19 +128,15 @@ const Index: React.FC = () => {
   }
 
   const omRm =(id:string)=>{
-    // @ts-ignore
-    let chatTemp = [];
-    chatTemp.push(chatList)
-    chatList.forEach(li =>{
-      if (li.id == id){
-        // @ts-ignore
-        chatTemp.pop();
-      }
-    }) // @ts-ignore
-    setChatList(chatTemp);
-    // @ts-ignore
-    setNowChat(null);
-    localStorage.setItem(chatId,JSON.stringify(chatTemp));
+    let chatTemp = chatList;
+    var userInfos = chatTemp.filter(obj => obj.id !== id);
+    if (userInfos.length>0){
+      setNowChat(userInfos[0])
+    }else{
+      setNowChat(null);
+    }
+    setChatList(userInfos);
+    localStorage.setItem(chatId,JSON.stringify(userInfos));
   }
 
   return <>

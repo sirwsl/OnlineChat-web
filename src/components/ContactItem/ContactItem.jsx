@@ -22,7 +22,7 @@ export default function ContactItem({
       <img className={style.icon} src={contact.avatar} />
       <div className={style.info_area}>
         <span className={`${style.nickname} ${style.ellipsis}`}>
-          {contact.nickname}
+          {contact.nickName}
         </span>
         <span className={`${style.desc} ${style.ellipsis}`}>
           {contact.message}

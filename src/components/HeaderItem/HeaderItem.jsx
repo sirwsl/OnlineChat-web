@@ -24,7 +24,7 @@ export default function HeaderItem({
       <img className={style.icon} src={contact.avatar} />
       <div className={style.info_area}>
         <span className={`${style.nickname} ${style.ellipsis}`}>
-          {contact.nickname}
+          {contact.nickName}
         </span>
         {
           // eslint-disable-next-line no-nested-ternary

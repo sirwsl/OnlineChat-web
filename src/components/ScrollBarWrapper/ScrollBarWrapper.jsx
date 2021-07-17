@@ -18,7 +18,7 @@ export default function ScrollBarWrapper(Wrapped) {
     }
 
     componentDidUpdate(prevProps) {
-      if (prevProps.data.length !== this.props.data.length) {
+      if (prevProps.data&&prevProps.data.length&&prevProps.data.length !== this.props.data.length) {
         this.computeHeight()
       }
     }

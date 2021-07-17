@@ -1,8 +1,9 @@
 /** Request 网络请求工具 更详细的 api 文档: https://github.com/umijs/umi-request */
-import { extend } from 'umi-request';
+import {extend} from 'umi-request';
 import {message, notification} from 'antd';
 
 import {getDvaApp} from 'umi';
+import {response} from "express";
 
 const codeMessage: Record<number, string> = {
   200: '服务器成功返回请求的数据。',
@@ -22,52 +23,39 @@ const codeMessage: Record<number, string> = {
   504: '网关超时。',
 };
 
-// @ts-ignore
-// @ts-ignore
 /**
  * @zh-CN 异常处理程序
  * @en-US Exception handler
  */
 const errorHandler = (error: { response: Response }): Response => {
-  if (error){
-    const { response } = error;
-    const { status } = response
-    const {statusText} =response;
-    if (status === 401) {
-      notification.error({
-        message: statusText,
-      });
+
+    const {response} = error;
+    console.log(JSON.stringify(response));
+    if (response && response.code) {
+      const statusText = codeMessage[response.status] || response.statusText;
+      const {status} = response;
+      if (status === 401) {
+        notification.error({
+          message: '请求错误',
+          description: statusText,
+        });
+      }
+      if (status === 400) {
+        notification.error({
+          message: '参数绑定错误',
+          description: statusText,
+        });
+      }
       // @HACK
       /*  */
       getDvaApp()._store.dispatch({
         type: 'login/logout',
       });
     }
-    if (status&&status === 400) {
-      notification.error({
-        message: statusText,
-      });
-    }
-    if (status===500){
-      message.error("服务器内部错误，请联系wx:sirwsl")
-    }
+    return response;
 
-    if (response && response.status) {
-      const errorText = codeMessage[response.status] || response.statusText;
-      const { status, url } = response;
-
-      notification.error({
-        message: `Request error ${status}: ${url}`,
-        description: errorText,
-      });
-    } else if (!response) {
-      notification.error({
-        description: '您的网络异常，无法连接到服务器',
-        message: 'Network anomaly',
-      });
-    }
   }
-};
+;
 
 /**
  * @en-US Configure the default parameters for request
@@ -83,9 +71,9 @@ request.interceptors.response.use(async (response, options) => {
   let result;
   const data = await response.clone().json();
   if (data.code !== 0) {
-    if (data.userMsg){
+    if (data.userMsg) {
       message.error(data.userMsg);
-    }else if (data.data){
+    } else if (data.data) {
       message.error(data.data);
     }
   } else {
@@ -101,7 +89,7 @@ request.interceptors.request.use((url, options) => {
     'Access-Control-Allow-Origin': '*',
     'Authorization': `${localStorage.getItem('token')}`,
     'Accept': 'application/json',
-    'x-auth-token': `${localStorage.getItem('token')}`
+    'x-auth-token': `${localStorage.getItem('token')}`,
   }
   return (
     {

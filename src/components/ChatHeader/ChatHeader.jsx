@@ -12,7 +12,7 @@ export default function ChatHeader(props) {
         <div className={style.content}>
           <img className={style.avatar} src={props.data.avatar} />
           <div className={style.desc_area}>
-            <span className={style.nickname}>{props.data.nickname}</span>
+            <span className={style.nickname}>{props.data.nickName}</span>
             <span className={style.sologan}>{props.data.desc}</span>
           </div>
             <span onClick={()=>rmObj(props.data.id)} className={style.desc_button}>(关闭)</span>

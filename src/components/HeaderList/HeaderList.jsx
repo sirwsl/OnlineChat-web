@@ -10,10 +10,9 @@ const HeaderList = React.forwardRef((props, ref) => {
     setSelectId(con.id)
     props.onSelect && props.onSelect(con)
   }
-
   return (
     <div className={style.list_area} ref={ref} onScroll={props.onScroll}>
-      {props.data.map((contact, index) => (
+      {props.data?props.data.map((contact, index) => (
         <HeaderItem
           contact={contact}
           key={contact.id}
@@ -22,7 +21,7 @@ const HeaderList = React.forwardRef((props, ref) => {
           onClick={selectContactHandle.bind(this, contact)}
           type={props.type}
         />
-      ))}
+      )):null}
     </div>
   )
 })
