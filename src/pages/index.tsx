@@ -12,7 +12,7 @@ export default (): React.ReactNode => {
   // @ts-ignore
   useEffect(async () => {
     const data = await getAll();
-    console.log(data)
+
     if (data&&data.data){
       setMessageData(data.data);
     }

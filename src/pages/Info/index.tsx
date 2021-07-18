@@ -74,7 +74,6 @@ const Index: React.FC = () => {
   };
 
   const onChange = (e: { target: { value: React.SetStateAction<number>; }; }) => {
-    console.log('radio checked', e.target.value);
     setValue(e.target.value);
 
   };
@@ -82,8 +81,6 @@ const Index: React.FC = () => {
   const props = {
     showUploadList: false,//设置只上传一张图片，根据实际情况修改
     customRequest: async (info: { file: any}) => {
-      console.log(info)
-      console.log(info.file)
       const formData = new FormData();
       formData.append('multipartFile', info.file);
       let newVar = await uploadImg(formData);

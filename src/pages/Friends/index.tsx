@@ -87,7 +87,6 @@ const Index: React.FC = () => {
 
 
   const addChatPage = (temp: any) => {
-     console.log(JSON.stringify(temp))
     const myself = localStorage.getItem('user') ? "user." + JSON.parse(localStorage.getItem('user') as string).id : "";
     let chatList = localStorage.getItem(myself) ? JSON.parse(localStorage.getItem(myself) as string) : [];
     chatList.push(temp);

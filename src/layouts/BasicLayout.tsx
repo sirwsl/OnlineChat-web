@@ -106,7 +106,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
 // 报错的回调函数
     client.onerror = (e: any) =>{
       message.warning('网络连接失败，请稍后再试');
-      console.log('Connection Error');
       console.log(e)
     }
 //收到消息的处理函数

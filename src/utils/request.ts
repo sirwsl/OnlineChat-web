@@ -30,7 +30,6 @@ request.interceptors.response.use(async (response, options) => {
 
   }
 
-  console.log(JSON.stringify(data))
   if (data.code !== 0) {
     if (data.userMsg) {
       message.error(data.userMsg);

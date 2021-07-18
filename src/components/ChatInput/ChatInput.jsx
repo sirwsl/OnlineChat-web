@@ -17,7 +17,6 @@ export default class ChatInput extends Component {
   textArea = React.createRef()
 
   componentDidMount() {
-    console.log(md5('123'))
   }
 
   textChangeHandle = (e) => {

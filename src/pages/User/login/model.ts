@@ -42,10 +42,8 @@ const Model: LoginModelType = {
        * account:直接登录
        *
        */
-      console.log(payload)
       if (payload.type === "register") {//注册
         const response = yield call(registered, payload);
-        console.log(response);
         if(response.msg === 'SUCCESS' && response.code ===0){
           message.success('🎉 🎉 🎉  注册成功请重新登录！',5);
           window.location.href = '/';

@@ -81,7 +81,7 @@ const Index: React.FC = () => {
       const msgId = userId+".msg."+getMsg.formId;
       if (nowChat&&getMsg.toId===nowChat.id){
         // @ts-ignore
-        console.log("进入比对")
+
         setMsgList([...msgList,getMsg])
       }
       const userMsg = localStorage.getItem(msgId) ? JSON.parse(localStorage.getItem(msgId) as string) : [];
