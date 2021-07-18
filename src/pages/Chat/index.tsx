@@ -79,18 +79,17 @@ const Index: React.FC = () => {
         });
       }
       const msgId = userId+".msg."+getMsg.formId;
-      if (nowChat&&getMsg.formId==nowChat.id){
-
+      if (nowChat&&getMsg.toId===nowChat.id){
         // @ts-ignore
+        console.log("进入比对")
         setMsgList([...msgList,getMsg])
       }
       const userMsg = localStorage.getItem(msgId) ? JSON.parse(localStorage.getItem(msgId) as string) : [];
       localStorage.setItem(msgId, JSON.stringify([...userMsg, JSON.parse(e.data)]));
 
     }else if (getMsg.type == 'user'){
-      let chatTemp: userInfo[] = localStorage.getItem(chatId) ? JSON.parse(localStorage.getItem(chatId) as string) : [];
-      chatTemp.push(getMsg);
-      setChatList(chatTemp);
+      setChatList([...chatList,getMsg]);
+      localStorage.setItem(chatId, JSON.stringify(msgList));
     }else if(getMsg.type =='error'){
       message.warning({
         content: getMsg.msg,
@@ -120,7 +119,6 @@ const Index: React.FC = () => {
   }
 
   const onSelectChat = (user: userInfo) => {
-
       const msgId = userId + ".msg." + user.id;
       const userMsg = localStorage.getItem(msgId) ? JSON.parse(localStorage.getItem(msgId) as string) : [];
       setMsgList(userMsg);
@@ -133,6 +131,7 @@ const Index: React.FC = () => {
     if (userInfos.length>0){
       setNowChat(userInfos[0])
     }else{
+      // @ts-ignore
       setNowChat(null);
     }
     setChatList(userInfos);

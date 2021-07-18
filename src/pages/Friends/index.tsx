@@ -87,6 +87,7 @@ const Index: React.FC = () => {
 
 
   const addChatPage = (temp: any) => {
+     console.log(JSON.stringify(temp))
     const myself = localStorage.getItem('user') ? "user." + JSON.parse(localStorage.getItem('user') as string).id : "";
     let chatList = localStorage.getItem(myself) ? JSON.parse(localStorage.getItem(myself) as string) : [];
     chatList.push(temp);
@@ -139,8 +140,8 @@ const Index: React.FC = () => {
 
     if (re&&re.code === 0) {
       message.success("添加群聊成功", 5);
-      setIsModalVisible2(false);
       setFriends(re.data);
+      setIsModalVisible2(false);
     }
 
 
