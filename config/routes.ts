@@ -57,7 +57,13 @@
                 path: '/admin',
                 name: '使用说明',
                 icon: 'tool',
-                component: './Admin/index',
+                component: './Admin/detail/index',
+              },
+              {
+                path: '/project',
+                name: '项目介绍',
+                icon: 'sound',
+                component: './Admin/project/index',
               },
               {
                 component: './404',

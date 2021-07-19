@@ -3,13 +3,11 @@ import {PageContainer} from '@ant-design/pro-layout';
 import React, {useEffect} from 'react';
 import './index.less'
 
-import {getUserInfo, updateAccount, updateBaseInfo, updatePassword, uploadImg} from "@/pages/Info/service";
+import {delUser, getUserInfo, updateAccount, updateBaseInfo, updatePassword, uploadImg} from "@/pages/Info/service";
 import {getDvaApp} from "@@/plugin-dva/exports";
 
 const {TabPane} = Tabs;
-
 const Index: React.FC = () => {
-  const [value, setValue] = React.useState(0);
   const [userInfo, setUserInfo] = React.useState({
     id:'',
     name: '',
@@ -23,7 +21,10 @@ const Index: React.FC = () => {
     sex: ''
   });
   const [headImg, setHeadImg] = React.useState();
+  const [value,setValue] = React.useState();
   const [form] = Form.useForm();
+  const [form1] = Form.useForm();
+  const [form2] = Form.useForm();
   useEffect(() => {
     info();
   }, [])
@@ -41,6 +42,8 @@ const Index: React.FC = () => {
       email: info.data.email,
       phone: info.data.phone
     })
+    form1.setFieldsValue(form);
+    form2.setFieldsValue(form);
     setUserInfo(info.data);
     if (info.data.headImg) {
       setHeadImg(info.data.headImg);
@@ -73,11 +76,26 @@ const Index: React.FC = () => {
     }
   };
 
-  const onChange = (e: { target: { value: React.SetStateAction<number>; }; }) => {
-    setValue(e.target.value);
+  // @ts-ignore
+  const onDelUser = async (userId) =>{
+    let msg = "您真的确定要注销吗？";
+    if (confirm(msg)==true){
+      const temp = await delUser(userId);
+      if (temp.code === 0&&temp.msg ==='SUCCESS'){
+        message.success(temp.data,5);
+        getDvaApp()._store.dispatch({
+          type: 'login/logout',
+        });
+      }
+    }else{
+      return false;
+    }
 
   };
 
+  const onChange = (e: { target: { value: React.SetStateAction<number>; }; }) => {
+    setValue(e.target.value);
+  }
   const props = {
     showUploadList: false,//设置只上传一张图片，根据实际情况修改
     customRequest: async (info: { file: any}) => {
@@ -149,7 +167,7 @@ const Index: React.FC = () => {
                 <Button type="primary" htmlType="submit" style={{margin: '0 10px'}}>
                   提交
                 </Button>
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" onClick={()=>onDelUser(userInfo.id)}>
                   注销
                 </Button>
               </Form.Item>
@@ -158,11 +176,11 @@ const Index: React.FC = () => {
 
           <TabPane tab="安全" key="1">
             <Form
-              name="basic"
+              name="password"
               labelCol={{span: 8}}
               wrapperCol={{span: 8}}
               initialValues={userInfo}
-              form = {form}
+              form = {form1}
               onFinish={onFinishPassword}
             >
               <Form.Item name='id' style={{display: "none"}}>
@@ -208,10 +226,10 @@ const Index: React.FC = () => {
           </TabPane>
           <TabPane tab="账号" key="2">
             <Form
-              name="basic"
+              name="code"
               labelCol={{span: 8}}
               wrapperCol={{span: 8}}
-              form={form}
+              form={form2}
               initialValues={userInfo}
               onFinish={onFinishCode}
             >

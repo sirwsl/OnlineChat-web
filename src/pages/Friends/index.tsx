@@ -1,12 +1,13 @@
 import {PageContainer} from '@ant-design/pro-layout';
 import React, {useEffect, useState} from 'react';
-import {Card, Col, Divider, Form, Input, List, message, Radio, Upload} from 'antd';
+import {Card, Col, Divider, Form, Input, List, message, Upload} from 'antd';
 import styles from './index.less'
 import {Row} from 'antd';
 import HeaderList from "@/components/HeaderList/HeaderList";
 import {Button} from 'antd';
 import {Modal} from 'antd';
 import {Avatar} from 'antd';
+import {history} from "umi";
 import {
   addFriends,
   addRooms,
@@ -17,7 +18,7 @@ import {
   getRooms,
   getUser
 } from "@/pages/Friends/service";
-import {updateBaseInfo, uploadImg} from "@/pages/Info/service";
+import { uploadImg} from "@/pages/Info/service";
 
 const {Search} = Input;
 
@@ -45,7 +46,8 @@ const Index: React.FC = () => {
 
     const re = await delFriends(id);
       if(re.code === 0){
-        friends.myFriends = re.data.myFriends;
+        if (re.data.myFriends) friends.myFriends = re.data.myFriends;
+        else friends.myFriends = [];
         setFriends(friends);
       }else{
         message.error("删除失败");
@@ -91,6 +93,7 @@ const Index: React.FC = () => {
     let chatList = localStorage.getItem(myself) ? JSON.parse(localStorage.getItem(myself) as string) : [];
     chatList.push(temp);
     localStorage.setItem(myself, JSON.stringify(chatList));
+    history.push("/chat");
   }
 
   const [isModalVisible1, setIsModalVisible1] = useState(false);

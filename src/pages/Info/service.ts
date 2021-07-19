@@ -40,6 +40,12 @@ export async function updatePassword(value:any) {
   })
 }
 
+/**
+ * 更新密码
+ */
+export async function delUser(value:any) {
+  return request('/api/user/delUser/'+value)
+}
 
 export function uploadImg(file: FormData) {
   return request('/api/open/uploadImg/v1',{
