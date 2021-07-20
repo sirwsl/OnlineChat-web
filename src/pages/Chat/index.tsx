@@ -62,12 +62,14 @@ const Index: React.FC = () => {
     if (getMsg.type =='msg'){
       //如果本地没有，请求返回当前人
       let flag = true;
-      chatList.forEach(li =>{
-        if (li.id==getMsg.formId){
-          flag = false;
-          return;
-        }
-      })
+     try{
+        chatList.forEach(li =>{
+          if (li.id==getMsg.formId){
+            flag = false;
+            throw new Error();
+          }
+        })
+      }catch (e){}
       if (flag) listClient.send(JSON.stringify({type:'user',id:getMsg.formId,data:null}))
       //请求结束继续执行
       if (getMsg.message.type =='text'){
